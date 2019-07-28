@@ -3,6 +3,9 @@
  
 int T, N, M, x, y, stone, black = 1, white = 2;
 int game[8][8] = {0, };
+
+int dx[8] = {0, 0, -1, 1, -1, 1, 1, -1};
+int dy[8] = {1, -1, 0, 0, -1, -1, 1, 1};
  
 void initGame (int N) {
     for (int i = 0; i < 8; i++) {
@@ -40,213 +43,15 @@ void check (int y, int x, int m_x, int m_y, int col, int rev) {
     }
     if (checker == 1 && !tracker.empty()) {
         for (int i = 0; i < tracker.size(); i++) {
-            game[tracker.]
-        }
-    }
-}
- 
-void checkUp (int col_y, int col_x, int col_stone, int rev_stone) {
-    std::vector<int> tracker;
-    int checker = -1;
-    for (int p = col_y-1; p >= 0; p--) {
-        if (game[p][col_x] == rev_stone) {
-            tracker.push_back(p);
-        }
-        if (game[p][col_x] == col_stone) {
-            checker = 1;
-            break;
-        }
-        if (game[p][col_x] == 0) {
-            break;
-        }
-    }
-    if (checker == 1 && !tracker.empty()) {
-        for (std::vector<int>::iterator it = tracker.begin(); it != tracker.end(); it++) {
-            game[*it][col_x] = col_stone;
+            game[tracker.at(i).second][tracker.at(i).first] = col;
         }
     }
     tracker.clear();
-}
- 
-void checkDown (int col_y, int col_x, int col_stone, int rev_stone) {
-    std::vector<int> tracker;
-    int checker = -1;
-    for (int p = col_y+1; p < N; p++) {
-        if (game[p][col_x] == rev_stone) {
-            tracker.push_back(p);
-        }
-        if (game[p][col_x] == col_stone) {
-            checker = 1;
-            break;
-        }
-        if (game[p][col_x] == 0) {
-            break;
-        }
-    }
-    if (checker == 1 && !tracker.empty()) {
-        for (std::vector<int>::iterator it = tracker.begin(); it != tracker.end(); it++) {
-            game[*it][col_x] = col_stone;
-        }
-    }
-    tracker.clear();
-}
- 
-void checkLeft (int col_y, int col_x, int col_stone, int rev_stone) {
-    std::vector<int> tracker;
-    int checker = -1;
-    for (int p = col_x-1; p >= 0; p--) {
-        if (game[col_y][p] == rev_stone) {
-            tracker.push_back(p);
-        }
-        if (game[col_y][p] == col_stone) {
-            checker = 1;
-            break;
-        }
-        if (game[col_y][p] == 0) {
-            break;
-        }
-    }
-    if (checker == 1 && !tracker.empty()) {
-        for (std::vector<int>::iterator it = tracker.begin(); it != tracker.end(); it++) {
-            game[col_y][*it] = col_stone;
-        }
-    }
-    tracker.clear();
-}
- 
-void checkRight (int col_y, int col_x, int col_stone, int rev_stone) {
-    std::vector<int> tracker;
-    int checker = -1;
-    for (int p = col_x+1; p < N; p++) {
-        if (game[col_y][p] == rev_stone) {
-            tracker.push_back(p);
-        }
-        if (game[col_y][p] == col_stone) {
-            checker = 1;
-            break;
-        }
-        if (game[col_y][p] == 0) {
-            break;
-        }
-    }
-    if (checker == 1 && !tracker.empty()) {
-        for (std::vector<int>::iterator it = tracker.begin(); it != tracker.end(); it++) {
-            game[col_y][*it] = col_stone;
-        }
-    }
-    tracker.clear();
-}
- 
-void checkRightUp (int col_y, int col_x, int col_stone, int rev_stone) {
-    int tracker[8][2] = {-1, }; int p = 0;
-    int checker = -1;
-    int i = 1;
-    col_y--;col_x++;
-    while (col_y >= 0 && col_y < N && col_x >= 0 && col_x < N) {
-        if (game[col_y][col_x] == rev_stone) {
-            tracker[p][0] = col_y;
-            tracker[p][1] = col_x;
-            p++;
-            col_y--;col_x++;
-            continue;
-        }
-        if (game[col_y][col_x] == col_stone) {
-            checker = 1;
-            break;
-        }
-        if (game[col_y][col_x] == 0) {
-            break;
-        }
-    }
-    if (checker == 1 && tracker[0][0] != -1) {
-        for (int it = 0; it != p; it++) {
-            game[tracker[it][0]][tracker[it][1]] = col_stone;
-        }
-    }
-}
- 
-void checkLeftDown (int col_y, int col_x, int col_stone, int rev_stone) {
-    int tracker[8][2] = {-1, }; int p = 0;
-    int checker = -1;
-    col_y++; col_x--;
-    while (col_y >= 0 && col_y < N && col_x >= 0 && col_x < N) {
-        if (game[col_y][col_x] == rev_stone) {
-            tracker[p][0] = col_y;
-            tracker[p][1] = col_x;
-            p++;
-            col_y++; col_x--;
-            continue;
-        }
-        if (game[col_y][col_x] == col_stone) {
-            checker = 1;
-            break;
-        }
-        if (game[col_y][col_x] == 0) {
-            break;
-        }
-    }
-    if (checker == 1 && tracker[0][0] != -1) {
-        for (int it = 0; it != p; it++) {
-            game[tracker[it][0]][tracker[it][1]] = col_stone;
-        }
-    }
-}
- 
-void checkLeftUp (int col_y, int col_x, int col_stone, int rev_stone) {
-    int tracker[8][2]; int p = 0;
-    int checker = -1;
-    col_y--; col_x--;
-    while (col_y >= 0 && col_y < N && col_x >= 0 && col_x < N) {
-        if (game[col_y][col_x] == rev_stone) {
-            tracker[p][0] = col_y;
-            tracker[p][1] = col_x;
-            p++;
-            col_y--; col_x--;
-            continue;
-        }
-        if (game[col_y][col_x] == col_stone) {
-            checker = 1;
-            break;
-        }
-        if (game[col_y][col_x] == 0) {
-            break;
-        }
-    }
-    if (checker == 1 && tracker[0][0] != -1) {
-        for (int it = 0; it != p; it++) {
-            game[tracker[it][0]][tracker[it][1]] = col_stone;
-        }
-    }
-}
- 
-void checkRightDown (int col_y, int col_x, int col_stone, int rev_stone) {
-    int tracker[8][2] = {-1, }; int p = 0;
-    int checker = -1;
-    col_y++; col_x++;
-    while (col_y >= 0 && col_y < N && col_x >= 0 && col_x < N) {
-        if (game[col_y][col_x] == rev_stone) {
-            tracker[p][0] = col_y;
-            tracker[p][1] = col_x;
-            p++;
-            col_y++; col_x++;
-            continue;
-        }
-        if (game[col_y][col_x] == col_stone) {
-            checker = 1;
-            break;
-        }
-        if (game[col_y][col_x] == 0) {
-            break;
-        }
-    }
-    if (checker == 1 && tracker[0][0] != -1) {
-        for (int it = 0; it != p; it++) {
-            game[tracker[it][0]][tracker[it][1]] = col_stone;
-        }
-    }
 }
  
 int main(void) {
+    std::cin.tie(0); std::cout.tie(0);
+    std::ios_base::sync_with_stdio(0);
     int reverse;
     std::cin >> T;
     for (int tc = 1; tc <= T; tc++) {
@@ -263,17 +68,9 @@ int main(void) {
             } else {
                 reverse = 1;
             }
-            // check col
-            checkUp (y, x, stone, reverse);
-            checkDown (y, x, stone, reverse);
-            // check row
-            checkLeft (y, x, stone, reverse);
-            checkRight (y, x, stone, reverse);
-            // check slash
-            checkLeftDown (y, x, stone, reverse);
-            checkLeftUp (y, x, stone, reverse);
-            checkRightDown (y, x, stone, reverse);
-            checkRightUp (y, x, stone, reverse);
+            for (int i = 0; i < 8; i++) {
+                check(y, x, dy[i], dx[i], stone, reverse);
+            }
         }
         black = 0; white = 0;
         for (int i = 0; i < N; i++) {

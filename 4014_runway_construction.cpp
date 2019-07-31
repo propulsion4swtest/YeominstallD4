@@ -1,3 +1,6 @@
+/**
+ * swea 4014
+ */
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -16,26 +19,29 @@ bool isRunway (int idx, bool isCol) {
         dy = idx;
         prev = field[dy][dx++];
     }
-    int slope = 0, ground = 1, b = 0;
+    int ground = 1, b = 0;
+    bool isDesc = false;
     while (dx != N && dy != N) {
         curr = field[dy][dx];
         b = curr - prev;
         if (b < -1 || b > 1) return false;
         if (b == 0) {
-            if (slope != 0) slope++;
-            else ground++;
-            slope %= X;
+            ground++;
+            if (isDesc && ground >= X) {
+                ground = 0;
+                isDesc = false;
+            }
         } else {
             if (b == 1 && ground < X) return false;
-            if (b == -1 && slope != 0) return false;
-            if (b == -1) slope++;
+            if (b == -1 && isDesc) return false;
+            if (b == -1) isDesc = true;
             ground = 1;
         }
         prev = curr;
         if (isCol) dy++;
         else dx++;
     }
-    if (slope != 0) return false;
+    if (isDesc) return false;
     return true;
 }
 
@@ -52,8 +58,8 @@ int main (void) {
             }
         }
         for (i = 0; i < N; i++) {
-            if (isRunway(i, true)) cnt++;
-            if (isRunway(i, false)) cnt++;
+            if (isRunway(i, 1)) cnt++;
+            if (isRunway(i, 0)) cnt++;
         }
         cout << "#" << tc << " " << cnt << "\n";
     }

@@ -9,19 +9,19 @@ int N, M, R, C, L;
 int ug[50][50];
 int q[300][2];
 int front, rear, t;
-int dx[4] = {-1, 0, 0, 1};
-int dy[4] = {0, -1, 1, 0};
+int dx[4] = {-1, 0, 1, 0};
+int dy[4] = {0, -1, 0, 1};
 bool visited[50][50];
 
-// LUDR
+// LURD
 bool pipemap[8][4] = {
     0, 0, 0, 0,
     1, 1, 1, 1,
-    0, 1, 1, 0,
-    1, 0, 0, 1,
     0, 1, 0, 1,
-    0, 0, 1, 1,
     1, 0, 1, 0,
+    0, 1, 1, 0,
+    0, 0, 1, 1,
+    1, 0, 0, 1,
     1, 1, 0, 0
 };
 
@@ -38,21 +38,8 @@ bool isPipe (int y, int x, int dir) {
 }
 
 bool isRange (int y, int x) {
-    if (y < 0 || y >= R || x < 0 || x >= C) return false;
+    if (y < 0 || y >= N || x < 0 || x >= M) return false;
     return true;
-}
-
-int opposite (int dir) {
-    switch(dir) {
-        case 0:
-            return 3;
-        case 1:
-            return 2;
-        case 2:
-            return 1;
-        case 3:
-            return 0;
-    }
 }
 
 void dojuRange (int py, int px, int time) {
@@ -70,7 +57,8 @@ void dojuRange (int py, int px, int time) {
                 if (!isPipe(by, bx, j)) continue;
                 cy = by + dy[j];
                 cx = bx + dx[j];
-                if (!isPipe(cy, cx, opposite(j)) || visited[cy][cx]) continue;
+                //if (!isRange(cy, cx)) continue;
+                if (!isPipe(cy, cx, (j+2)%4) || visited[cy][cx]) continue;
                 q[rear][0] = cy;
                 q[rear][1] = cx;
                 rear++;

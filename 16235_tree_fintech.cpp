@@ -35,23 +35,25 @@ void sortTrees (void) {
 
 void spring() {
     int i, j, k;
-    int fert;
+    int fert, cnt_diff;
     for (i = 0; i < N; i++) {
         for (j = 0; j < N; j++) {
+            cnt_diff = 0;
             for (k = ground[i][j].cnt-1; k >= 0; k--) {
                 fert = fertility[i][j] - ground[i][j].trees[k];
                 if (fert < 0) {
                     ground[i][j].nfert += (int)(ground[i][j].trees[k] / 2);
                     ground[i][j].trees[k] = 0;
-                    ground[i][j].cnt--;
+                    cnt_diff++;
                 } else {
                     fertility[i][j] -= ground[i][j].trees[k];
                     ground[i][j].trees[k]++;
                 }
             }
+            sort(ground[i][j].trees, ground[i][j].trees+ground[i][j].cnt, greater<int>());
+            ground[i][j].cnt -= cnt_diff;
         }
     }
-    sortTrees();
 }
 
 void summer() {
@@ -71,11 +73,9 @@ void autumn() {
         for (j = 0; j < N; j++) {
             for (k = 0; k < 1000; k++) {
                 if (ground[i][j].trees[k] != 0 && ground[i][j].trees[k] % 5 == 0) {
-                    // cout << i << "," << j << " is 5th\n";
                     for (near = 0; near < 8; near++) {
                         ny = i + dir[near][0];
                         nx = j + dir[near][1];
-                        // cout << " -- " << ny << "," << nx << "\n";
                         if (__OOB__(nx, ny)) continue;
                         ground[ny][nx].trees[ground[ny][nx].cnt++] = 1;
                     }

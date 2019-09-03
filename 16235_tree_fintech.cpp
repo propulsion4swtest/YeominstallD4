@@ -1,3 +1,6 @@
+/**
+ * boj 16235
+ */
 #include <bits/stdc++.h>
 
 #define __OOB__(x, y)   (x < 0 || x >= N || y < 0 || y >= N)
@@ -6,7 +9,7 @@ using namespace std;
 
 typedef struct cell {
     int cnt;
-    int trees[1000];
+    deque<int> trees;
     int nfert;
 } _cell;
 
@@ -28,30 +31,28 @@ void sortTrees (void) {
     int i, j;
     for (i = 0; i < N; i++) {
         for (j = 0; j < N; j++) {
-            sort(ground[i][j].trees, ground[i][j].trees+ground[i][j].cnt, greater<int>());
+            sort(ground[i][j].trees.begin(), ground[i][j].trees.end(), greater<int>());
         }
     }
 }
 
 void spring() {
     int i, j, k;
-    int fert, cnt_diff;
+    deque<cell>::iterator dqit;
+    int fert;
     for (i = 0; i < N; i++) {
         for (j = 0; j < N; j++) {
-            cnt_diff = 0;
-            for (k = ground[i][j].cnt-1; k >= 0; k--) {
-                fert = fertility[i][j] - ground[i][j].trees[k];
-                if (fert < 0) {
-                    ground[i][j].nfert += (int)(ground[i][j].trees[k] / 2);
-                    ground[i][j].trees[k] = 0;
-                    cnt_diff++;
+            for (dqit = ground[i][j].trees.begin(); dqit != ground[i][j].trees.end(); dqit++) {
+                if (fertility[i][j] < *dqit) {
+                    ground[i][j].nfert += (*dqit / 2);
+                    ground[i][j].trees.erase(dqit);
                 } else {
-                    fertility[i][j] -= ground[i][j].trees[k];
-                    ground[i][j].trees[k]++;
+                    fertility[i][j] -= *dqit->trees;
+                    *dqit += 1;
                 }
             }
-            sort(ground[i][j].trees, ground[i][j].trees+ground[i][j].cnt, greater<int>());
-            ground[i][j].cnt -= cnt_diff;
+            sort(ground[i][j].trees.begin(), ground[i][j].trees.end(), greater<int>());
+            ground[i][j].cnt = ground[i][j].trees.size();
         }
     }
 }
@@ -116,7 +117,7 @@ void listTrees (void) {
     for (i = 0; i < N; i++) {
         for (j = 0; j < N; j++) {
             for (k = 0; k < ground[i][j].cnt; k++) {
-                cout << i << "," << j << "," << ground[i][j].trees[k] << "\n";
+                cout << i << "," << j << "," << ground[i][j].trees.at(k) << "\n";
             }
         }
     }
@@ -124,7 +125,7 @@ void listTrees (void) {
 
 int main (void) {
     cin.tie(0); cout.tie(0); ios_base::sync_with_stdio(0);
-    int trees, i, j, age, r, c, cnt;
+    int i, j, age, r, c, cnt;
     cin >> N >> M >> K;
     for (i = 0; i < N; i++) {
         for (j = 0; j < N; j++) {
@@ -134,7 +135,7 @@ int main (void) {
     for (i = 0; i < M; i++) {
         cin >> r >> c >> age;
         ground[r-1][c-1].cnt = 0;
-        ground[r-1][c-1].trees[ground[r-1][c-1].cnt] = age;
+        ground[r-1][c-1].trees.push_back(age);
         ground[r-1][c-1].nfert = 0;
         ground[r-1][c-1].cnt++;
     }
@@ -142,9 +143,9 @@ int main (void) {
     initFertility();
     for (i = 0; i < K; i++) {
         yearly();
-        cout << "==========\n";
-        listTrees();
-        cout << "==========\n";
+        // cout << "==========\n";
+        // listTrees();
+        // cout << "==========\n";
     }
     cnt = countTrees();
     cout << cnt << "\n";

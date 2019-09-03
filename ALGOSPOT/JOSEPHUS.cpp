@@ -1,41 +1,36 @@
 #include <iostream>
-#include <cstring>
+#include <vector>
 
 using namespace std;
 
-int N, K, remains;
-int r[1000];
-
-void josephus (void) {
-    int p = 0, roul = 2;
-    remains = N;
-    while (remains != 2) {
-        if (r[p] == 0 && ++roul == 3) {
-            #ifdef PPRINT
-            cout << "hit the " << p << "\n";
-            #endif
-            r[p] = 1;
-            remains--;
+void josephus (int n, int k) {
+    int i;
+    vector<int> survivors;
+    vector<int>::iterator kill;
+    survivors.reserve(n);
+    for (i = 1; i <= n; ++i) survivors.push_back(i);
+    kill = survivors.begin();
+    while (n > 2) {
+        #ifdef PPRINT
+        for (vector<int>::iterator it = survivors.begin(); it != survivors.end(); it++) {
+            cout << *it << " ";
         }
-        p++;
-        p %= N;
-        roul %= K;
+        cout << "\n";
+        #endif
+        kill = survivors.erase(kill);
+        --n;
+        kill = survivors.begin() + (((kill - survivors.begin()) + k-1) % survivors.size());
     }
-    for (p = 0; p < N; p++) {
-        if (r[p] == 0) {
-            cout << p+1 << " ";
-        }
-    }
-    cout << "\n";
+    cout << survivors.front() << " " << survivors.back() << "\n";
 }
 
 int main (void) {
-    int T, tc;
+    cin.tie(0); cout.tie(0); ios_base::sync_with_stdio(0);
+    int T, tc, N, K;
     cin >> T;
     for (tc = 1; tc <= T; tc++) {
         cin >> N >> K;
-        memset(r, 0, sizeof(int)*N);
-        josephus();
+        josephus(N, K);
     }
     return 0;
 }
